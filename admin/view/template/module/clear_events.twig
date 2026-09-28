@@ -1,0 +1,73 @@
+{{ header }}{{ column_left }}
+<div id="content">
+
+	<div class="page-header">
+		<div class="container-fluid">
+			<div class="float-end">
+				<a href="{{ back }}" data-bs-toggle="tooltip" title="{{ button_back }}" class="btn btn-light">
+					<i class="fa-solid fa-reply"></i>
+				</a>
+			</div>
+			<h1>{{ heading_title }}</h1>
+			<ol class="breadcrumb">
+				{% for breadcrumb in breadcrumbs %}
+					<li class="breadcrumb-item">
+						<a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a>
+					</li>
+				{% endfor %}
+			</ol>
+		</div>
+	</div>
+
+	<div class="container-fluid">
+			<div class="card mb-3">
+				<div class="card-header">
+					<div class="d-flex justify-content-between align-items-center">
+						<span><i class="fa-solid fa-copy"></i> {{ text_duplicate_events }}</span>
+						{% if duplicate_events and can_clear_duplicates %}
+							<form action="{{ clear_duplicates }}" method="post" onsubmit="return confirm('{{ text_confirm_clear_duplicates }}');">
+								<button type="submit" class="btn btn-danger">
+									<i class="fa-solid fa-trash"></i> {{ button_clear_duplicates }}
+								</button>
+							</form>
+						{% endif %}
+					</div>
+				</div>
+				<div class="card-body">
+					{% if duplicate_events %}
+						<div class="table-responsive">
+							<table class="table table-bordered table-hover">
+								<thead>
+									<tr>
+										<td class="text-end">{{ column_event_id }}</td>
+										<td>{{ column_code }}</td>
+										<td>{{ column_description }}</td>
+										<td>{{ column_trigger }}</td>
+										<td>{{ column_action }}</td>
+										<td>{{ column_status }}</td>
+										<td class="text-end">{{ column_sort_order }}</td>
+									</tr>
+								</thead>
+								<tbody>
+									{% for event in duplicate_events %}
+										<tr{% if event['is_later_duplicate'] %} class="table-secondary"{% endif %}>
+											<td class="text-end">{{ event['event_id'] }}</td>
+											<td>{{ event['code'] }}</td>
+											<td>{{ event['description'] }}</td>
+											<td>{{ event['trigger'] }}</td>
+											<td>{{ event['action'] }}</td>
+											<td>{% if event['status'] %}{{ text_enabled }}{% else %}{{ text_disabled }}{% endif %}</td>
+											<td class="text-end">{{ event['sort_order'] }}</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					{% else %}
+						<div class="text-muted">{{ text_no_duplicate_events }}</div>
+					{% endif %}
+				</div>
+			</div>
+	</div>
+</div>
+{{ footer }}
